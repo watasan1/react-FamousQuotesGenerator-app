@@ -1,50 +1,35 @@
-# GitHub Pages にデプロイするためのワークフロー
-name: Deploy Vite app to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches:
+      - main  # デフォルトブランチを指定
 
 permissions:
   contents: read
   pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  id-token: write  # 必須
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-
-      - name: Setup GitHub Pages
+      - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Build and Deploy
+        run: |
+          echo "<h1>Hello, GitHub Pages!</h1>" > index.html
+          mkdir -p ./public
+          mv index.html ./public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./dist"
+          path: ./public
 
       - name: Deploy to GitHub Pages
         id: deployment
