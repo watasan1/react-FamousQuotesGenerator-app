@@ -13,7 +13,7 @@ const fetchRandomQuote = async () => {
 };
 
 function App() {
-  /* 名言データを管理するステートを追加する */
+  /* 名言データを管理するステート */
   const [quote, setQuote] = useState(null);
 
   /* コンポーネントのマウント時にランダムな名言を取得 */
@@ -30,7 +30,17 @@ function App() {
       active = false;
     };
   }, []);
-  /* ここまで */
+  /*
+   * クリック時に実行される関数
+   */
+  const handleClick = () => {
+    /* ランダムな名言を取得する非同期関数を呼び出す */
+    fetchRandomQuote().then((quote) => {
+      /* 取得した名言を state に保存する */
+      setQuote(quote);
+    });
+  };
+
   return (
     <>
       <div className="bg-gray-100 min-h-screen pt-16 pb-8 space-y-8">
@@ -47,6 +57,7 @@ function App() {
           <button
             className="bg-black text-white hover:bg-gray-700 flex mx-auto rounded-xl py-4 px-8"
             type="button"
+            onClick={handleClick}
           >
             <svg
               className="w-6 h-6 mr-2 fill-white"
