@@ -1,6 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+/**
+ * ランダムなプログラミング関連の名言を取得する非同期関数
+ */
+const fetchRandomQuote = async () => {
+  /* APIからランダムなプログラミング名言取得 */
+  const response = await fetch(
+    "https://programming-quotesapi.vercel.app/api/random"
+  );
+  /* 取得したレスポンスをJSONとして解析し、返す。 */
+  return await response.json();
+};
 
 function App() {
+  /* 名言データを管理するステートを追加する */
+  const [quote, setQuote] = useState(null);
+
+  /* コンポーネントのマウント時にランダムな名言を取得 */
+  useEffect(() => {
+    let active = true;
+    // APIからデータを取得し、ステートを更新
+    fetchRandomQuote().then((quote) => {
+      if (active) {
+        setQuote(quote);
+      }
+    });
+    /* クリーンアップ関数(コンポーネントのアンマウント時にactiveをfalseにする) */
+    return () => {
+      active = false;
+    };
+  }, []);
+  /* ここまで */
   return (
     <>
       <div className="bg-gray-100 min-h-screen pt-16 pb-8 space-y-8">
@@ -36,13 +66,10 @@ function App() {
               💬
             </div>
 
-            <p className="text-center text-xl text-gray-200">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Et vero
-              libero ut earum, totam ipsum, velit eos nostrum repudiandae labore
-              a? Odit saepe sit nulla rerum expedita iste. Laborum, eius!
-            </p>
-
-            <p className="text-gray-300 text-center">by Lorem ipsum</p>
+            {/* ここから */}
+            <p className="text-center text-xl text-gray-200">{quote?.quote}</p>
+            <p className="text-gray-300 text-center">by {quote?.author}</p>
+            {/* ここまでを変更 */}
           </div>
         </div>
         {/* Footer */}
